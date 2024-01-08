@@ -1,9 +1,8 @@
-+++
+---
 title : '{{ replace .File.ContentBaseName "-" " " | title }}'
 description: '{{ replace .File.ContentBaseName "-" " " | title }}'
-date :{{ .Date }}
-draft : true
+date : '{{ .Date }}'
 author:     'Dylan'
 tags:        ['Java']
-categories:  ['']
-+++
+categories:  ['编程']
+---
