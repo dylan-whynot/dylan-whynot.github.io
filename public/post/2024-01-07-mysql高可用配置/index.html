@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Mysql高可用配置 - WhyNot Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Dylan" /><meta name="description" content="Mysql高可用配置" /><meta name="keywords" content="Why Not, Blog, Dylan" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.121.1 with theme even" />
+
+
+<link rel="canonical" href="http://dylan-whynot.github.io/post/2024-01-07-mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Mysql高可用配置" />
+<meta property="og:description" content="Mysql高可用配置" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://dylan-whynot.github.io/post/2024-01-07-mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-07T00:00:00+00:00" />
+
+<meta itemprop="name" content="Mysql高可用配置">
+<meta itemprop="description" content="Mysql高可用配置"><meta itemprop="datePublished" content="2024-01-07T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2024-01-07T00:00:00+00:00" />
+<meta itemprop="wordCount" content="2268">
+<meta itemprop="keywords" content="Java,Mysql," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Mysql高可用配置"/>
+<meta name="twitter:description" content="Mysql高可用配置"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhyNot Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhyNot Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Mysql高可用配置</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-07 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"> 数据库 </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#mysql-主从复制master-slave">mysql 主从复制（master-slave）</a>
+      <ul>
+        <li><a href="#原理">原理</a></li>
+        <li><a href="#主从复制master-slave">主从复制（master-slave）</a>
+          <ul>
+            <li><a href="#修改mysql配置文件">修改mysql配置文件</a></li>
+            <li><a href="#执行sql语句">执行sql语句</a></li>
+            <li><a href="#双主模式">双主模式</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#keepalived-高可用">Keepalived 高可用</a>
+      <ul>
+        <li><a href="#介绍">介绍</a></li>
+        <li><a href="#环境准备">环境准备</a></li>
+        <li><a href="#安装-keepalived">安装 keepalived</a></li>
+        <li><a href="#配置master机器">配置master机器</a></li>
+        <li><a href="#配置slave机器">配置slave机器</a></li>
+        <li><a href="#验证结果">验证结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>使用mysql的主从复制和Keepalived两种模式搭建高可用mysql</p>
+<p><img src="/post_images/mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/house-5148865_1920.jpg" alt=""></p>
+<h1 id="mysql-主从复制master-slave">mysql 主从复制（master-slave）</h1>
+<h2 id="原理">原理</h2>
+<p>mysql主从复制的基本原理就是slave服务器通过执行master产生的二进制日志文件( binary log）,从而保证与master同步。原理图如下
+binary log 日志中包含数据库改变的信息 。binary log 两个作用分别是 复制和恢复数据库</p>
+<p><img src="/post_images/mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/1_9bVL1pEDhuHS2cjayg7YTA.png" alt=""></p>
+<ol>
+<li>当master 数据库发生改变时，客户端线程执行更新语句（update insert create &hellip;）时会将更新信息写入一个文件（binary log).</li>
+<li>master中有个线程叫做<strong>dump thread</strong>, 这个线程不间断地从binary log中读取数据发给slave.</li>
+<li>slave中的 <strong>IO Thread</strong> 接收到master数据库中的日志,并转存至Relay log (中继日志)</li>
+<li>slave中的 <strong>SQL Thread</strong>,这个线程不间断的读取relaylog中的内容并执行。</li>
+</ol>
+<blockquote>
+<p>The MySQL replication feature allows a server - the master - to send all changes to another server - the slave - and the slave tries to apply all changes to keep up-to-date with the master. Replication works as follows:</p>
+<blockquote>
+<ul>
+<li>Whenever the master&rsquo;s database is modified, the change is written to a file, the so-called binary log, or binlog. This is done by the client thread that executed the query that modified the database.</li>
+<li>The master has a thread, called the dump thread, that continuously reads the master&rsquo;s binlog and sends it to the slave.</li>
+<li>The slave has a thread, called the IO thread, that receives the binlog that the master&rsquo;s dump thread sent, and writes it to a file: the relay log.</li>
+<li>The slave has another thread, called the SQL thread, that continuously reads the relay log and applies the changes to the slave server.</li>
+</ul>
+</blockquote>
+</blockquote>
+<h2 id="主从复制master-slave">主从复制（master-slave）</h2>
+<h3 id="修改mysql配置文件">修改mysql配置文件</h3>
+<p>在master服务器中修改mysql配置文件如下,并重启mysql服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[mysqld]
+</span></span><span class="line"><span class="cl">server-id=1
+</span></span><span class="line"><span class="cl">log-bin=binlog
+</span></span><span class="line"><span class="cl">gtid-mode=ON
+</span></span><span class="line"><span class="cl">enforce-gtid-consistency=ON
+</span></span><span class="line"><span class="cl">master-info-repository=TABLE
+</span></span><span class="line"><span class="cl">relay-log-info-repository=TABLE
+</span></span><span class="line"><span class="cl">binlog-ignore-db=mysql
+</span></span><span class="line"><span class="cl">log-slave-updates=ON
+</span></span><span class="line"><span class="cl">auto_increment_increment=2
+</span></span><span class="line"><span class="cl">auto_increment_offset=1
+</span></span><span class="line"><span class="cl">skip-host-cache
+</span></span><span class="line"><span class="cl">skip-name-resolve
+</span></span><span class="line"><span class="cl">expire_logs_days=7
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修改slave服务器的mysql配置文件，并重启mysql服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">server-id=2
+</span></span><span class="line"><span class="cl">log-bin=binlog
+</span></span><span class="line"><span class="cl">gtid-mode=ON
+</span></span><span class="line"><span class="cl">enforce-gtid-consistency=ON
+</span></span><span class="line"><span class="cl">relay-log-info-repository=TABLE
+</span></span><span class="line"><span class="cl">master-info-repository=TABLE
+</span></span><span class="line"><span class="cl">log-slave-updates=NO
+</span></span><span class="line"><span class="cl">binlog-ignore-db=mysql
+</span></span><span class="line"><span class="cl">auto_increment_increment=2
+</span></span><span class="line"><span class="cl">auto_increment_offset=1
+</span></span><span class="line"><span class="cl">skip-host-cache
+</span></span><span class="line"><span class="cl">skip-name-resolve
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="执行sql语句">执行sql语句</h3>
+<p>重启master后 使用命令行或者图形化工具执行以下sql.简单解释：master服务器授权用户（用户密码均为slave）有本服务的复制权限。 **%**通配符表示所有ip 也可以指定ip ; <strong>flush privileges</strong> 为刷新权限。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">GRANT</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;slave&#39;</span><span class="o">@</span><span class="s1">&#39;%&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;slave&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">flush</span><span class="w"> </span><span class="k">privileges</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用同样的方式进入 slave服务 执行如下sql</p>
+<ul>
+<li>master_host 为master的主机ip</li>
+<li>master_port 为master的端口</li>
+<li>master_user 主机授权可以复制的用户名</li>
+<li>master_password 主机授权可以复制的用户的密码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">stop</span><span class="w"> </span><span class="n">slave</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">change</span><span class="w"> </span><span class="n">master</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">master_host</span><span class="o">=</span><span class="s1">&#39;192.168.3.31&#39;</span><span class="p">,</span><span class="n">master_port</span><span class="o">=</span><span class="mi">3306</span><span class="p">,</span><span class="w"> </span><span class="n">master_user</span><span class="o">=</span><span class="s1">&#39;slave&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">master_password</span><span class="o">=</span><span class="s1">&#39;slave&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">master_auto_position</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">start</span><span class="w"> </span><span class="n">slave</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>以上配置完成后，回到master中执行 <strong>show slave status</strong> 看到下图结果证明成功
+<img src="/post_images/mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/Snipaste_2020-05-19_20-45-06.jpg" alt="">
+此时可以测试在master上执行sql语句查看slave是否同步.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">test</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">use</span><span class="w"> </span><span class="n">test</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="o">`</span><span class="k">user</span><span class="o">`</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">`</span><span class="n">user_id</span><span class="o">`</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="n">UNSIGNED</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">`</span><span class="n">user_name</span><span class="o">`</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">`</span><span class="n">user_age</span><span class="o">`</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">`</span><span class="n">user_id</span><span class="o">`</span><span class="w"> </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w">   </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="n">User_name</span><span class="p">,</span><span class="n">user_age</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w">   </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="n">User_name</span><span class="p">,</span><span class="n">user_age</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w">   </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="n">User_name</span><span class="p">,</span><span class="n">user_age</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w">   </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="n">User_name</span><span class="p">,</span><span class="n">user_age</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;4&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w">   </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="n">User_name</span><span class="p">,</span><span class="n">user_age</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;5&#39;</span><span class="p">,</span><span class="s1">&#39;5&#39;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>以上mysql的主从配置基本完成。</p>
+<h3 id="双主模式">双主模式</h3>
+<p>主-从复制是单向的，双主模式实际上就是两台机器互为主-从复制，也就是把上述的
+GRANT REPLICATION 和 change master 在两台机器上反过来在执行一次即可。</p>
+<h1 id="keepalived-高可用">Keepalived 高可用</h1>
+<h2 id="介绍">介绍</h2>
+<p>Keepalived是由C语言实现的轻量级的路由软件。这个项目的目的是为Linux系统和基于Linux的基础设施提供负载均衡和高可用。其中负载均衡依赖于 Linux Virtual Server (IPVS)内核模块；高可用的基础是VRRP协议（Virtual Router Redundancy Protocol 虚拟路由冗余协议）。 简单理解 相同网段的master slave 两台机器上安装keepalied后，配置虚拟ip（虚拟ip与master slave同一个网段）。访问此虚拟ip即可访问master的服务，当master宕机后，虚拟ip会自动漂移到slave这台机器。</p>
+<h2 id="环境准备">环境准备</h2>
+<p><strong>系统</strong>:  Centos7
+<strong>master</strong>: 192.168.3.30
+<strong>slave</strong>:   192.168.3.31
+<strong>VIP</strong>: 192.168.3.110
+在master ，slave 两台机器上安装mysql。我这里的master 和slave 是使用docker安装的mysql，并配置好主-主复制。</p>
+<h2 id="安装-keepalived">安装 keepalived</h2>
+<p>在 master slave两台机器上安装keepalived</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 安装</span>
+</span></span><span class="line"><span class="cl">sudo yum install keepalived
+</span></span><span class="line"><span class="cl"><span class="c1"># 设置自启动</span>
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> keepalived
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="配置master机器">配置master机器</h2>
+<p>进入keepalived 配置文件目录 /etc/keepalived</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">cd</span>  /etc/keepalived
+</span></span><span class="line"><span class="cl"><span class="c1"># 先备份配置文件</span>
+</span></span><span class="line"><span class="cl">cp keepalived.conf keepalived.conf.bak
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修改配置文件如下,特殊的地方注释中已经表明</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">! Configuration File for keepalived
+</span></span><span class="line"><span class="cl">global_defs {
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  router_id mysql-1
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">vrrp_instance VI_1 {
+</span></span><span class="line"><span class="cl">   state BACKUP
+</span></span><span class="line"><span class="cl">   # 主机ip所在的网卡
+</span></span><span class="line"><span class="cl">   interface ens33
+</span></span><span class="line"><span class="cl">   # 虚拟路由标识即VRID  相同的VRID为一个组 他将决定多播的MAC地址
+</span></span><span class="line"><span class="cl">   virtual_router_id 80
+</span></span><span class="line"><span class="cl">   #  定义优先级，数字越大，优先级越高 范围 1-255
+</span></span><span class="line"><span class="cl">   priority 100
+</span></span><span class="line"><span class="cl">   # 检查间隔默认为1秒
+</span></span><span class="line"><span class="cl">   advert_int 1
+</span></span><span class="line"><span class="cl">   # 设置不抢占
+</span></span><span class="line"><span class="cl">   nopreempt
+</span></span><span class="line"><span class="cl">   authentication {
+</span></span><span class="line"><span class="cl">       auth_type PASS
+</span></span><span class="line"><span class="cl">       auth_pass 1111
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">   # VIP（虚拟IP）
+</span></span><span class="line"><span class="cl">   virtual_ipaddress {
+</span></span><span class="line"><span class="cl">       192.168.3.110
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">virtual_server 192.168.3.110 3306 {
+</span></span><span class="line"><span class="cl">   delay_loop 2
+</span></span><span class="line"><span class="cl">   lb_algo wrr
+</span></span><span class="line"><span class="cl">   lb_kind DR
+</span></span><span class="line"><span class="cl">   persistence_timeout 60
+</span></span><span class="line"><span class="cl">   protocol TCP
+</span></span><span class="line"><span class="cl">   # 配置mysql-master的ip port
+</span></span><span class="line"><span class="cl">   real_server 192.168.3.30 3306 {
+</span></span><span class="line"><span class="cl">       weight 1
+</span></span><span class="line"><span class="cl">       # 设置检查服务器失败 (down) 后要执行的脚本
+</span></span><span class="line"><span class="cl">       notify_down    /etc/keepalived/check_mysql.sh
+</span></span><span class="line"><span class="cl">       TCP_CHECK {
+</span></span><span class="line"><span class="cl">            connect_timeout 3
+</span></span><span class="line"><span class="cl">            nb_get_retry 3
+</span></span><span class="line"><span class="cl">            delay_before_retry 3
+</span></span><span class="line"><span class="cl">            connect_port 3306
+</span></span><span class="line"><span class="cl">       }
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 /etc/keepalived/ 下创建check_mysql.sh,并设置可执行权限。chmod +x check_mysql.sh</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"> <span class="c1">#!/bin/bash</span>
+</span></span><span class="line"><span class="cl"> <span class="c1"># 当keepalived检查192.168.3.30 3306失败时 停止进程</span>
+</span></span><span class="line"><span class="cl">pkill keepalived
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>至此master上的keepalived已经配置完成。</p>
+<h2 id="配置slave机器">配置slave机器</h2>
+<p>与master的操作过程一样不做。唯一的不同是keepalived.conf这个配置文件，配置如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">! Configuration File for keepalived
+</span></span><span class="line"><span class="cl">global_defs {
+</span></span><span class="line"><span class="cl">  router_id mysql-2
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">vrrp_instance VI_1 {
+</span></span><span class="line"><span class="cl">   state BACKUP
+</span></span><span class="line"><span class="cl">   interface ens33
+</span></span><span class="line"><span class="cl">   # 与master相同
+</span></span><span class="line"><span class="cl">   virtual_router_id 80
+</span></span><span class="line"><span class="cl">   # 比master小
+</span></span><span class="line"><span class="cl">   priority 90
+</span></span><span class="line"><span class="cl">   advert_int 1
+</span></span><span class="line"><span class="cl">   nopreempt
+</span></span><span class="line"><span class="cl">   authentication {
+</span></span><span class="line"><span class="cl">       auth_type PASS
+</span></span><span class="line"><span class="cl">       auth_pass 1111
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">   # 与master相同
+</span></span><span class="line"><span class="cl">   virtual_ipaddress {
+</span></span><span class="line"><span class="cl">       192.168.3.110
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">virtual_server 192.168.3.110 3306 {
+</span></span><span class="line"><span class="cl">   delay_loop 2
+</span></span><span class="line"><span class="cl">   lb_algo wrr
+</span></span><span class="line"><span class="cl">   lb_kind DR
+</span></span><span class="line"><span class="cl">   persistence_timeout 60
+</span></span><span class="line"><span class="cl">   protocol TCP
+</span></span><span class="line"><span class="cl">   # 设置自己的服务
+</span></span><span class="line"><span class="cl">   real_server 192.168.3.31 3306 {
+</span></span><span class="line"><span class="cl">       weight 3
+</span></span><span class="line"><span class="cl">       notify_down    /etc/keepalived/check_mysql.sh
+</span></span><span class="line"><span class="cl">       TCP_CHECK {
+</span></span><span class="line"><span class="cl">            connect_timeout 3
+</span></span><span class="line"><span class="cl">            nb_get_retry 3
+</span></span><span class="line"><span class="cl">            delay_before_retry 3
+</span></span><span class="line"><span class="cl">            connect_port 3306
+</span></span><span class="line"><span class="cl">       }
+</span></span><span class="line"><span class="cl">   }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="验证结果">验证结果</h2>
+<p>在 master 和 slave两台机器上分别执行启动命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl start keepalived
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 master机器上 使用 <strong>ip addr show ens33</strong>命令 可以看到如下结果
+<img src="/post_images/mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/Snipaste_2020-05-23_20-49-42.jpg" alt="">
+<img src="/post_imagesmysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/Snipaste_2020-05-23_20-59-44.jpg" alt=""></p>
+<p>停掉master上相应的服务在slave上使用相同的命令看结果 表示192.168.3.110这个ip已经漂移到slave这台机器
+<img src="/post_imagesmysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/Snipaste_2020-05-23_20-53-02.jpg" alt="">
+<img src="/post_imagesmysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/Snipaste_2020-05-23_20-54-51.jpg" alt=""></p>
+<p><strong>当重启服务后需要手动执行  -systemctl restart keepalived- 重启keepalived服务</strong>。</p>
+<h1 id="参考">参考</h1>
+<p>[1] <a href="https://dev.mysql.com/doc/internals/en/binary-log.html">官网Chapter 20 The Binary Log</a></p>
+<p>[2] <a href="https://www.keepalived.org/index.html">keepalived官网</a></p>
+<p>[3] <a href="https://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol">VRRP wiki</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Dylan</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-07
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/wechat-10.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/alipay-10.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/mysql/">Mysql</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/2024-01-08-java%E7%BA%BF%E7%A8%8B%E5%81%9C%E6%AD%A2%E6%96%B9%E6%B3%95/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">java线程停止方法</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/2024-01-07-mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%96%B9%E6%A1%88/">
+            <span class="next-text nav-default">Mysql简单备份与恢复方案</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="944247756@qq.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/dylan-whynot" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.douban.com/" class="iconfont icon-douban" title="douban"></a>
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2023 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>olOwOlo</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

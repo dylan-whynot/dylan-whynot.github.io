@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>笔记 on WhyNot Blog</title>
+    <link>http://dylan-whynot.github.io/categories/%E7%AC%94%E8%AE%B0/</link>
+    <description>Recent content in 笔记 on WhyNot Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 12 Jan 2024 21:59:45 +0800</lastBuildDate>
+    <atom:link href="http://dylan-whynot.github.io/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Effective Java 3rd笔记</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-12-effective-java-3rd%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Fri, 12 Jan 2024 21:59:45 +0800</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-12-effective-java-3rd%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;p&gt;记录《Effectice Java 第三版》&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

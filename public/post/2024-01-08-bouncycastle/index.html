@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>BouncyCastle简单使用 - WhyNot Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="     &#34;Dylan&#34;" /><meta name="description" content="BouncyCastle加密解密算法API使用" /><meta name="keywords" content="Why Not, Blog, Dylan" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.121.1 with theme even" />
+
+
+<link rel="canonical" href="http://dylan-whynot.github.io/post/2024-01-08-bouncycastle/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="BouncyCastle简单使用" />
+<meta property="og:description" content="BouncyCastle加密解密算法API使用" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://dylan-whynot.github.io/post/2024-01-08-bouncycastle/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-08T00:00:00+00:00" />
+
+<meta itemprop="name" content="BouncyCastle简单使用">
+<meta itemprop="description" content="BouncyCastle加密解密算法API使用"><meta itemprop="datePublished" content="2024-01-08T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2024-01-08T00:00:00+00:00" />
+<meta itemprop="wordCount" content="2200">
+<meta itemprop="keywords" content="java,BouncyCastle," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="BouncyCastle简单使用"/>
+<meta name="twitter:description" content="BouncyCastle加密解密算法API使用"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhyNot Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhyNot Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">BouncyCastle简单使用</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-08 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍-bouncycastle">介绍 BouncyCastle</a></li>
+    <li><a href="#the-java-provider-architecture">The Java Provider Architecture</a>
+      <ul>
+        <li><a href="#jvm默认provider">JVM默认Provider</a></li>
+      </ul>
+    </li>
+    <li><a href="#bouncy-castle-apis-架构">Bouncy Castle APIs 架构</a></li>
+    <li><a href="#使用">使用</a>
+      <ul>
+        <li><a href="#安装bouncy-castle">安装Bouncy Castle</a>
+          <ul>
+            <li><a href="#静态安装">静态安装</a></li>
+            <li><a href="#运行时安装">运行时安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#使用-数字加密">使用-数字加密</a></li>
+        <li><a href="#使用-数字签名">使用-数字签名</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>近期由于工作项目需要涉及发放签名以及校验签名的功能，为此简单调研了第三方加密-解密算法库BouncyCastle。</p>
+<p><img src="/post_images/BouncyCastle%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/home_logo.gif" alt=""></p>
+<h1 id="介绍-bouncycastle">介绍 BouncyCastle</h1>
+<p><a href="http://www.bouncycastle.org/">Bouncy Castle</a>是一种提供了很多哈希算法和加密算法的第三方API。BC（Bouncy Castle）目前的支持语言有java和C#。BC由澳大利亚的慈善组织（Legion of the Bouncy Castle Inc)提供支持.Bouncy Castle项目产生的理由是两个同事对于每次换到java服务端开发都要重新发明一套加密库感到疲惫，所以创建了BouncyCastle.这个项目,成立于2000年5月,最初是用Java编写的,但后来在2004年添加一个c#的API。原始的Java API包括大约27000行代码,包括测试代码并提供支持J2ME, JCA(Java Cryptography Extension) / JCE(Java Cryptography Architecture)提供者,和基础X.509 证书的生成。</p>
+<p>Bouncy Castle架构由两个主要组件,支持基本加密功能。这些被称为“轻量级”API和Java加密扩展(JCE)提供者。JCE提供程序进一步组件建立在支持额外的功能,如PGP的支持,S / MIME等。</p>
+<blockquote>
+<p>The Bouncy Castle architecture consists of two main components that support the base cryptographic capabilities. These are known as the &rsquo;light-weight&rsquo; API, and the <a href="https://en.wikipedia.org/wiki/Java_Cryptography_Extension">Java Cryptography Extension</a> (JCE) provider. Further components built upon the JCE provider support additional functionality, such as <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy">PGP</a> support, <a href="https://en.wikipedia.org/wiki/S/MIME">S/MIME</a>, etc.</p>
+</blockquote>
+<h1 id="the-java-provider-architecture">The Java Provider Architecture</h1>
+<p>Provider Architecture 与 JCA（<strong>Java Cryptography Architecture</strong>）提供了JVM安全服务的基础.提供了许多java相关的安全服务(Java Secure Socket Extension (JSSE) which provides access to Secure Socket Layer (SSL) and Transport Layer Security (TLS) implementations, the Java Generic Security Services (JGSS) APIs, and the Simple Authentication and Security Layer (SASL))相关的API。类似接口模式,像开发人员提供统一的接口调用，而具体的实现方式有指定的Provider提供,Provider可能是JVM也可以是第三方的提供商如 Bouncy Castle.</p>
+<p>Provider Architecture 主要有如下两个特色.</p>
+<ul>
+<li>
+<p>把开发人员通常调用的功能和功能具体的实现分开.</p>
+</li>
+<li>
+<p>可以指定使用哪种提供者的算法.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Cipher</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cipher</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;Blowfish/CBC/PKCS5padding&#34;</span><span class="p">,</span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//指定由BC提供算法</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>service provider interface (SPI)</p>
+<p><img src="/post_images/BouncyCastle%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/Snipaste_2020-04-16_20-43-08.jpg" alt=""></p>
+<h2 id="jvm默认provider">JVM默认Provider</h2>
+<p>  java提供了许多默认的Provider,Provider的数量种类与JVM版本有关，java1.4有5个默认的集合,java9有12个.我安装的java8有10个默认的Provider。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Provider</span><span class="o">[]</span><span class="w"> </span><span class="n">providers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Security</span><span class="p">.</span><span class="na">getProviders</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">providers</span><span class="p">.</span><span class="na">length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">print</span><span class="p">(</span><span class="n">providers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="na">getName</span><span class="p">());</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">print</span><span class="p">(</span><span class="s">&#34;: &#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">print</span><span class="p">(</span><span class="n">providers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">.</span><span class="na">getInfo</span><span class="p">());</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">--------------------------------------------------------------</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SUN</span><span class="p">:</span><span class="w"> </span><span class="n">SUN</span><span class="w"> </span><span class="p">(</span><span class="n">DSA</span><span class="w"> </span><span class="n">key</span><span class="o">/</span><span class="n">parameter</span><span class="w"> </span><span class="n">generation</span><span class="p">;</span><span class="w"> </span><span class="n">DSA</span><span class="w"> </span><span class="n">signing</span><span class="p">;</span><span class="w"> </span><span class="n">SHA</span><span class="o">-</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">MD5</span><span class="w"> </span><span class="n">digests</span><span class="p">;</span><span class="w"> </span><span class="n">SecureRandom</span><span class="p">;</span><span class="w"> </span><span class="n">X</span><span class="p">.</span><span class="na">509</span><span class="w"> </span><span class="n">certificates</span><span class="p">;</span><span class="w"> </span><span class="n">JKS</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">DKS</span><span class="w"> </span><span class="n">keystores</span><span class="p">;</span><span class="w"> </span><span class="n">PKIX</span><span class="w"> </span><span class="n">CertPathValidator</span><span class="p">;</span><span class="w"> </span><span class="n">PKIX</span><span class="w"> </span><span class="n">CertPathBuilder</span><span class="p">;</span><span class="w"> </span><span class="n">LDAP</span><span class="p">,</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">CertStores</span><span class="p">,</span><span class="w"> </span><span class="n">JavaPolicy</span><span class="w"> </span><span class="n">Policy</span><span class="p">;</span><span class="w"> </span><span class="n">JavaLoginConfig</span><span class="w"> </span><span class="n">Configuration</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunRsaSign</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">RSA</span><span class="w"> </span><span class="n">signature</span><span class="w"> </span><span class="n">provider</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunEC</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">Elliptic</span><span class="w"> </span><span class="n">Curve</span><span class="w"> </span><span class="nf">provider</span><span class="w"> </span><span class="p">(</span><span class="n">EC</span><span class="p">,</span><span class="w"> </span><span class="n">ECDSA</span><span class="p">,</span><span class="w"> </span><span class="n">ECDH</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunJSSE</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">JSSE</span><span class="w"> </span><span class="nf">provider</span><span class="p">(</span><span class="n">PKCS12</span><span class="p">,</span><span class="w"> </span><span class="n">SunX509</span><span class="o">/</span><span class="n">PKIX</span><span class="w"> </span><span class="n">key</span><span class="o">/</span><span class="n">trust</span><span class="w"> </span><span class="n">factories</span><span class="p">,</span><span class="w"> </span><span class="n">SSLv3</span><span class="o">/</span><span class="n">TLSv1</span><span class="o">/</span><span class="n">TLSv1</span><span class="p">.</span><span class="na">1</span><span class="o">/</span><span class="n">TLSv1</span><span class="p">.</span><span class="na">2</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunJCE</span><span class="p">:</span><span class="w"> </span><span class="n">SunJCE</span><span class="w"> </span><span class="nf">Provider</span><span class="w"> </span><span class="p">(</span><span class="kd">implements</span><span class="w"> </span><span class="n">RSA</span><span class="p">,</span><span class="w"> </span><span class="n">DES</span><span class="p">,</span><span class="w"> </span><span class="n">Triple</span><span class="w"> </span><span class="n">DES</span><span class="p">,</span><span class="w"> </span><span class="n">AES</span><span class="p">,</span><span class="w"> </span><span class="n">Blowfish</span><span class="p">,</span><span class="w"> </span><span class="n">ARCFOUR</span><span class="p">,</span><span class="w"> </span><span class="n">RC2</span><span class="p">,</span><span class="w"> </span><span class="n">PBE</span><span class="p">,</span><span class="w"> </span><span class="n">Diffie</span><span class="o">-</span><span class="n">Hellman</span><span class="p">,</span><span class="w"> </span><span class="n">HMAC</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunJGSS</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="p">(</span><span class="n">Kerberos</span><span class="w"> </span><span class="n">v5</span><span class="p">,</span><span class="w"> </span><span class="n">SPNEGO</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunSASL</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">SASL</span><span class="w"> </span><span class="nf">provider</span><span class="p">(</span><span class="kd">implements</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">mechanisms</span><span class="w"> </span><span class="k">for</span><span class="p">:</span><span class="w"> </span><span class="n">DIGEST</span><span class="o">-</span><span class="n">MD5</span><span class="p">,</span><span class="w"> </span><span class="n">GSSAPI</span><span class="p">,</span><span class="w"> </span><span class="n">EXTERNAL</span><span class="p">,</span><span class="w"> </span><span class="n">PLAIN</span><span class="p">,</span><span class="w"> </span><span class="n">CRAM</span><span class="o">-</span><span class="n">MD5</span><span class="p">,</span><span class="w"> </span><span class="n">NTLM</span><span class="p">;</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">mechanisms</span><span class="w"> </span><span class="k">for</span><span class="p">:</span><span class="w"> </span><span class="n">DIGEST</span><span class="o">-</span><span class="n">MD5</span><span class="p">,</span><span class="w"> </span><span class="n">GSSAPI</span><span class="p">,</span><span class="w"> </span><span class="n">CRAM</span><span class="o">-</span><span class="n">MD5</span><span class="p">,</span><span class="w"> </span><span class="n">NTLM</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">XMLDSig</span><span class="p">:</span><span class="w"> </span><span class="n">XMLDSig</span><span class="w"> </span><span class="p">(</span><span class="n">DOM</span><span class="w"> </span><span class="n">XMLSignatureFactory</span><span class="p">;</span><span class="w"> </span><span class="n">DOM</span><span class="w"> </span><span class="n">KeyInfoFactory</span><span class="p">;</span><span class="w"> </span><span class="n">C14N</span><span class="w"> </span><span class="n">1</span><span class="p">.</span><span class="na">0</span><span class="p">,</span><span class="w"> </span><span class="n">C14N</span><span class="w"> </span><span class="n">1</span><span class="p">.</span><span class="na">1</span><span class="p">,</span><span class="w"> </span><span class="n">Exclusive</span><span class="w"> </span><span class="n">C14N</span><span class="p">,</span><span class="w"> </span><span class="n">Base64</span><span class="p">,</span><span class="w"> </span><span class="n">Enveloped</span><span class="p">,</span><span class="w"> </span><span class="n">XPath</span><span class="p">,</span><span class="w"> </span><span class="n">XPath2</span><span class="p">,</span><span class="w"> </span><span class="n">XSLT</span><span class="w"> </span><span class="n">TransformServices</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunPCSC</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">PC</span><span class="o">/</span><span class="n">SC</span><span class="w"> </span><span class="n">provider</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">SunMSCAPI</span><span class="p">:</span><span class="w"> </span><span class="n">Sun</span><span class="err">&#39;</span><span class="n">s</span><span class="w"> </span><span class="n">Microsoft</span><span class="w"> </span><span class="n">Crypto</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">provider</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="bouncy-castle-apis-架构">Bouncy Castle APIs 架构</h1>
+<p><img src="/post_images/BouncyCastle%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/Snipaste_2020-04-16_21-32-31.jpg" alt=""></p>
+<p>Bouncy Castle最早就是作为java平台加密项目开发的,在使用基本的API组装之后发现可以使用组件来构建更高级别的API，这些API支持JCA和JCE(Java Cryptography Extension).于是就有了像CMS, S/MIME, and X.509 等Provider.</p>
+<blockquote>
+<p>There were two attempts at the higher level APIs. The first attempt was closely coupled to the BC provider and the JCA. The second attempt, seen from BC 1.46 onward, introduced interfaces for providing the “gross operations” required for the different APIs. Together with the basic provider/low-level split, this resulted in the arrangement of the different APIs looking something like the following.</p>
+</blockquote>
+<h1 id="使用">使用</h1>
+<h2 id="安装bouncy-castle">安装Bouncy Castle</h2>
+<p>java环境安装Bouncy Castle有两种方式</p>
+<h3 id="静态安装">静态安装</h3>
+<p>复制bcprov-ext-jdk15on-165.jar  放入 java安装目录下/jre/lib/ext/文件夹内,
+然后编辑/jre/lib/security/java.security 文件 编辑如下 前10个是已经存在添加第11个</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">1</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">Sun</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">2</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">rsa</span><span class="p">.</span><span class="na">SunRsaSign</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">3</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">ec</span><span class="p">.</span><span class="na">SunEC</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">4</span><span class="o">=</span><span class="n">com</span><span class="p">.</span><span class="na">sun</span><span class="p">.</span><span class="na">net</span><span class="p">.</span><span class="na">ssl</span><span class="p">.</span><span class="na">internal</span><span class="p">.</span><span class="na">ssl</span><span class="p">.</span><span class="na">Provider</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">5</span><span class="o">=</span><span class="n">com</span><span class="p">.</span><span class="na">sun</span><span class="p">.</span><span class="na">crypto</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">SunJCE</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">6</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">jgss</span><span class="p">.</span><span class="na">SunProvider</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">7</span><span class="o">=</span><span class="n">com</span><span class="p">.</span><span class="na">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">sasl</span><span class="p">.</span><span class="na">Provider</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">8</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="na">jcp</span><span class="p">.</span><span class="na">xml</span><span class="p">.</span><span class="na">dsig</span><span class="p">.</span><span class="na">internal</span><span class="p">.</span><span class="na">dom</span><span class="p">.</span><span class="na">XMLDSigRI</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">9</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">smartcardio</span><span class="p">.</span><span class="na">SunPCSC</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">10</span><span class="o">=</span><span class="n">sun</span><span class="p">.</span><span class="na">security</span><span class="p">.</span><span class="na">mscapi</span><span class="p">.</span><span class="na">SunMSCAPI</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">security</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">11</span><span class="o">=</span><span class="n">org</span><span class="p">.</span><span class="na">bouncycastle</span><span class="p">.</span><span class="na">jce</span><span class="p">.</span><span class="na">provider</span><span class="p">.</span><span class="na">BouncyCastleProvider</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="运行时安装">运行时安装</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Security</span><span class="p">.</span><span class="na">addProvider</span><span class="p">(</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BouncyCastleProvider</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">或者</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">Cipher</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;Blowfish/ECB/NoPadding&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BouncyCastleProvider</span><span class="p">());</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用-数字加密">使用-数字加密</h2>
+<p>非对称加密.简单流程是生成公钥和私钥,发送端使用公钥加密文本，生成密文,接受端使用私钥对密文进行解密,得到实际文本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">generateKeyPair</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">NoSuchProviderException</span><span class="p">,</span><span class="w"> </span><span class="n">NoSuchAlgorithmException</span><span class="p">,</span><span class="w"> </span><span class="n">InvalidAlgorithmParameterException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyPairGenerator</span><span class="w"> </span><span class="n">generator2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KeyPairGenerator</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;RSA&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">generator2</span><span class="p">.</span><span class="na">initialize</span><span class="p">(</span><span class="n">2048</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyPair</span><span class="w"> </span><span class="n">kayPair2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generator2</span><span class="p">.</span><span class="na">generateKeyPair</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">publicKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kayPair2</span><span class="p">.</span><span class="na">getPublic</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">privateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kayPair2</span><span class="p">.</span><span class="na">getPrivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">encryptData</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="w"> </span><span class="n">InvalidCipherTextException</span><span class="p">,</span><span class="w"> </span><span class="n">NoSuchPaddingException</span><span class="p">,</span><span class="w"> </span><span class="n">NoSuchAlgorithmException</span><span class="p">,</span><span class="w"> </span><span class="n">NoSuchProviderException</span><span class="p">,</span><span class="w"> </span><span class="n">InvalidKeyException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AsymmetricBlockCipher</span><span class="w"> </span><span class="n">cipher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RSAEngine</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AsymmetricKeyParameter</span><span class="w"> </span><span class="n">priKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PrivateKeyFactory</span><span class="p">.</span><span class="na">createKey</span><span class="p">(</span><span class="n">privateKey</span><span class="p">.</span><span class="na">getEncoded</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">cipher</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="n">priKey</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">encryptDataBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cipher</span><span class="p">.</span><span class="na">processBlock</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(</span><span class="s">&#34;utf-8&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(</span><span class="s">&#34;utf-8&#34;</span><span class="p">).</span><span class="na">length</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">encryptData</span><span class="o">=</span><span class="n">ENCODER_64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">encryptDataBytes</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w">  </span><span class="n">encryptData</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">decryptData</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="w"> </span><span class="n">InvalidCipherTextException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">encryptDataBytes</span><span class="o">=</span><span class="n">DECODER_64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AsymmetricBlockCipher</span><span class="w"> </span><span class="n">cipher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RSAEngine</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AsymmetricKeyParameter</span><span class="w"> </span><span class="n">pubKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PublicKeyFactory</span><span class="p">.</span><span class="na">createKey</span><span class="p">(</span><span class="n">publicKey</span><span class="p">.</span><span class="na">getEncoded</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//false解密</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">cipher</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="n">pubKey</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">decryptDataBytes</span><span class="o">=</span><span class="n">cipher</span><span class="p">.</span><span class="na">processBlock</span><span class="p">(</span><span class="n">encryptDataBytes</span><span class="p">,</span><span class="w"> </span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">encryptDataBytes</span><span class="p">.</span><span class="na">length</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">decryptData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">decryptDataBytes</span><span class="p">,</span><span class="s">&#34;utf-8&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">decryptData</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 配置 BouncyCastle</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Security</span><span class="p">.</span><span class="na">addProvider</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BouncyCastleProvider</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;我的谁呀&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">generateKeyPair</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">encryptData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encryptData</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">encryptData</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">data1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">decryptData</span><span class="p">(</span><span class="n">encryptData</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">data1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">输出结果</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ex6YFLDUxTXJ</span><span class="o">/</span><span class="n">2N6z17</span><span class="c1">//M7bEif4uY3fehZqOnM1zMEWLkFrAUyi/zQdxWL6KS8MlWzrr8nMSLeInfjSgb8dzdwfbtcol8HCesSX6ynkB82hp8yIrF6jrRFpNo51q3vRIS9WSLsDDdlq68GhYbECZ5GXxpq3wZAf71jnh+7B9PwRZ15zwzuiHDSZIaIIuM7o+t2tER+LpexIgrCbwTevQ6IfNXWYlv8bw9buT799OQOC+C3MFtP/ml8jB4NfeAnuDmq4Vakf3UJ7t7VvyqIqwJ/bRExHZcWtzqUsAMgeTi+EJgi0+NBgmx8UoMFMGixsr4+Hq0SfsYRcA7TcZEdUFg==</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">我的谁呀</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用-数字签名">使用-数字签名</h2>
+<p>数字签名也是使用到非对称加密技术,操作过程与数字加密相反,使用私钥进行签名,公钥进行校验签名</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**私钥*/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PrivateKey</span><span class="w"> </span><span class="n">privateKey</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**公钥*/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PublicKey</span><span class="w"> </span><span class="n">publicKey</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**Base64 转码**/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">Encoder</span><span class="w"> </span><span class="n">ENCODER_64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">getEncoder</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**Base64 解码**/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">Decoder</span><span class="w"> </span><span class="n">DECODER_64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">getDecoder</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**签名算法1*/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">SIGNATURE_ALGORITHM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X9ObjectIdentifiers</span><span class="p">.</span><span class="na">ecdsa_with_SHA512</span><span class="p">.</span><span class="na">getId</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/***签名算法2**/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">SIGNATURE_ALGORITHM2</span><span class="w"> </span><span class="o">=</span><span class="s">&#34;SHA256withRSA&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 生成一对公私钥
+</span></span></span><span class="line"><span class="cl"><span class="cm">     *
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">generateKeyPair</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">NoSuchProviderException</span><span class="p">,</span><span class="w"> </span><span class="n">NoSuchAlgorithmException</span><span class="p">,</span><span class="w"> </span><span class="n">InvalidAlgorithmParameterException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 算法1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyPairGenerator</span><span class="w"> </span><span class="n">generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KeyPairGenerator</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;EC&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">generator</span><span class="p">.</span><span class="na">initialize</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ECGenParameterSpec</span><span class="p">(</span><span class="s">&#34;P-256&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyPair</span><span class="w"> </span><span class="n">keyPair1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="na">generateKeyPair</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">publicKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keyPair1</span><span class="p">.</span><span class="na">getPublic</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">privateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keyPair1</span><span class="p">.</span><span class="na">getPrivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//算法2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        KeyPairGenerator generator2 = KeyPairGenerator.getInstance(&#34;RSA&#34;, &#34;BC&#34;);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        generator2.initialize(2048);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        KeyPair kayPair2 = generator2.generateKeyPair();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        publicKey = kayPair2.getPublic();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">//        privateKey = kayPair2.getPrivate();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">sign</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">document</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 签名算法</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Signature</span><span class="w"> </span><span class="n">singer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Signature</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="n">SIGNATURE_ALGORITHM</span><span class="p">,</span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="c1">// Signature singer = Signature.getInstance(SIGNATURE_ALGORITHM2,&#34;BC&#34;);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">singer</span><span class="p">.</span><span class="na">initSign</span><span class="p">(</span><span class="n">privateKey</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">singer</span><span class="p">.</span><span class="na">update</span><span class="p">(</span><span class="n">document</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(</span><span class="s">&#34;UTF-8&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">signature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">singer</span><span class="p">.</span><span class="na">sign</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ENCODER_64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">signature</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">verifySignature</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">document</span><span class="p">,</span><span class="n">String</span><span class="w"> </span><span class="n">sign</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Signature</span><span class="w"> </span><span class="n">singer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Signature</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="n">SIGNATURE_ALGORITHM</span><span class="p">,</span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c1">//  Signature singer = Signature.getInstance(SIGNATURE_ALGORITHM2,&#34;BC&#34;);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">singer</span><span class="p">.</span><span class="na">initVerify</span><span class="p">(</span><span class="n">publicKey</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">singer</span><span class="p">.</span><span class="na">update</span><span class="p">(</span><span class="n">document</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(</span><span class="s">&#34;utf-8&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">singer</span><span class="p">.</span><span class="na">verify</span><span class="p">(</span><span class="n">DECODER_64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">sign</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 配置 BouncyCastle</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Security</span><span class="p">.</span><span class="na">addProvider</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BouncyCastleProvider</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 测试数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;ABC&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">generateKeyPair</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">sign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sign</span><span class="p">(</span><span class="n">document</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">sign</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">verifySignature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">verifySignature</span><span class="p">(</span><span class="n">document</span><span class="p">,</span><span class="w"> </span><span class="n">sign</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">verifySignature</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>下面的是额外方法可以将PrivateKey 和publicKey 与String进行相互转换</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">toPrivateKeyString</span><span class="p">(</span><span class="n">PrivateKey</span><span class="w"> </span><span class="n">privateKey</span><span class="w"> </span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">privateKey</span><span class="p">.</span><span class="na">getEncoded</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ENCODER_64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">toPublicKeyString</span><span class="p">(</span><span class="w"> </span><span class="n">PublicKey</span><span class="w"> </span><span class="n">publicKey</span><span class="w"> </span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">publicKey</span><span class="p">.</span><span class="na">getEncoded</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ENCODER_64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PublicKey</span><span class="w"> </span><span class="nf">getPublicKey</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">keyBytes</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">keyBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BASE64Decoder</span><span class="p">()).</span><span class="na">decodeBuffer</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">X509EncodedKeySpec</span><span class="w"> </span><span class="n">keySpec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">X509EncodedKeySpec</span><span class="p">(</span><span class="n">keyBytes</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyFactory</span><span class="w"> </span><span class="n">keyFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KeyFactory</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;EC&#34;</span><span class="p">,</span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PublicKey</span><span class="w"> </span><span class="n">publicKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keyFactory</span><span class="p">.</span><span class="na">generatePublic</span><span class="p">(</span><span class="n">keySpec</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">publicKey</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PrivateKey</span><span class="w"> </span><span class="nf">getPrivateKey</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">keyBytes</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">keyBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BASE64Decoder</span><span class="p">()).</span><span class="na">decodeBuffer</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PKCS8EncodedKeySpec</span><span class="w"> </span><span class="n">keySpec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PKCS8EncodedKeySpec</span><span class="p">(</span><span class="n">keyBytes</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeyFactory</span><span class="w"> </span><span class="n">keyFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KeyFactory</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&#34;EC&#34;</span><span class="p">,</span><span class="s">&#34;BC&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PrivateKey</span><span class="w"> </span><span class="n">privateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keyFactory</span><span class="p">.</span><span class="na">generatePrivate</span><span class="p">(</span><span class="n">keySpec</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">privateKey</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="参考">参考</h1>
+<p>[1] <a href="https://www.bouncycastle.org/">官网</a></p>
+<p>[2] <a href="https://leanpub.com/javacryptotoolsandtech">Java Cryptography: Tools and Techniques</a></p>
+<p>[3] <a href="https://en.wikipedia.org/wiki/Bouncy_Castle_(cryptography)">wikipedia</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">     "Dylan"</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-08
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/wechat-10.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/alipay-10.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">java</a>
+          <a href="/tags/bouncycastle/">BouncyCastle</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/2024-01-10%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%80/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">设计模式-设计原则</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/2024-01-08-java%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">
+            <span class="next-text nav-default">java生产者-消费者</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="944247756@qq.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/dylan-whynot" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.douban.com/" class="iconfont icon-douban" title="douban"></a>
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2023 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>olOwOlo</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

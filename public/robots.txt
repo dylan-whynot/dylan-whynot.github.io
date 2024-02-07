@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: http://wuhaiyang-dylan.github.io/sitemap.xml
+Sitemap: http://dylan-whynot.github.io/sitemap.xml

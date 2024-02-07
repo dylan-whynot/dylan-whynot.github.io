@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Mysql简单备份与恢复方案 - WhyNot Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Dylan" /><meta name="description" content=" Mysql简单备份与恢复方案" /><meta name="keywords" content="Why Not, Blog, Dylan" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.121.1 with theme even" />
+
+
+<link rel="canonical" href="http://dylan-whynot.github.io/post/2024-01-07-mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%96%B9%E6%A1%88/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Mysql简单备份与恢复方案" />
+<meta property="og:description" content=" Mysql简单备份与恢复方案" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://dylan-whynot.github.io/post/2024-01-07-mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%96%B9%E6%A1%88/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-01-07T00:00:00+00:00" />
+
+<meta itemprop="name" content="Mysql简单备份与恢复方案">
+<meta itemprop="description" content=" Mysql简单备份与恢复方案"><meta itemprop="datePublished" content="2024-01-07T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2024-01-07T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1124">
+<meta itemprop="keywords" content="Java,Mysql," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Mysql简单备份与恢复方案"/>
+<meta name="twitter:description" content=" Mysql简单备份与恢复方案"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhyNot Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhyNot Blog</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Mysql简单备份与恢复方案</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-07 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%BC%96%E7%A8%8B/"> 编程 </a>
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"> 数据库 </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本备份与恢复">基本备份与恢复</a></li>
+    <li><a href="#压缩备份与恢复">压缩备份与恢复</a></li>
+    <li><a href="#脚本定时备份">脚本+定时备份</a></li>
+    <li><a href="#问题解决">问题解决</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>使用mysql dump和shell脚本实现一套基础的mysql数据备份与恢复方案</p>
+<p><img src="/post_images/mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D/dream-4827288_1920.jpg" alt=""></p>
+<h1 id="基本备份与恢复">基本备份与恢复</h1>
+<p>使用mysql提供的 mysqldump将文件导出[backup-file-name].sql. 这里还有其他参数可选如导出全部数据库，指定表，函数，存储过程 触发器等.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker exec [mysql-container-name] /usr/bin/mysqldump -u[user] -p[password] [database-name] &gt; [backup-file-name].sql
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>恢复数据库，恢复相当于把导出的sql重新执行一遍。这种恢复只能恢复值备份时间点，并不能完整恢复，如果完整恢复还需要借助<strong>mysqlbinlog</strong>进行日志重做。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cat backup-file-name.sql | docker exec -i [mysql-container-name] /usr/bin/mysql -u[username] -p[password]  databanse-name
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="压缩备份与恢复">压缩备份与恢复</h1>
+<p>将备份的文件通过gzip压缩减少存储空间的使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker exec [mysql-container-name] /usr/bin/mysqldump -u[username]  -p[password] license | gzip &gt; [database-name]_`date +%Y-%m-%d%H%M%S`.sql.gz
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用gunzip解压并恢复</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">   gunzip &lt; [database-name]_`date +%Y-%m-%d%H%M%S`.sql.gz | docker exec -i [mysql-container-name] /usr/bin/mysql -u[username] -p[password]  database-name
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="脚本定时备份">脚本+定时备份</h1>
+<p>使用shell脚本实现mysql备份功能 并使用crontab做定时任务执行此备份脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1"># 备份文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nv">basedir</span><span class="o">=</span><span class="s2">&#34;/home/xx/DB/backup/&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">targetdir</span><span class="o">=</span><span class="nv">$basedir</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 数据库用户名</span>
+</span></span><span class="line"><span class="cl"><span class="nv">username</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 密码</span>
+</span></span><span class="line"><span class="cl"><span class="nv">password</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#容器</span>
+</span></span><span class="line"><span class="cl"><span class="nv">containername</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 数据库</span>
+</span></span><span class="line"><span class="cl"><span class="nv">databasename</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$targetdir</span> <span class="o">]</span>
+</span></span><span class="line"><span class="cl"> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">   mkdir -p  <span class="nv">$targetdir</span>
+</span></span><span class="line"><span class="cl">   <span class="nb">echo</span>  <span class="s2">&#34;创建备份文件夹成功&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="k">else</span> <span class="nb">echo</span> <span class="s2">&#34;文件夹已经存在&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;开始备份&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 文件压缩包</span>
+</span></span><span class="line"><span class="cl"><span class="nv">filename</span><span class="o">=</span>license_<span class="sb">`</span>date +%Y-%m-%d-%H%M<span class="sb">`</span>.sql.gz
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> <span class="nv">$containername</span> /usr/bin/mysqldump -u<span class="nv">$username</span>  -p<span class="nv">$password</span>  --single-transaction  <span class="nv">$databasename</span> <span class="p">|</span> gzip &gt; <span class="nv">$targetdir$filename</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;备份完成&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;备份文件名&#34;</span><span class="nv">$targetdir$filename</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用crontab 创建定时任务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">systemctl restart cornd
+</span></span><span class="line"><span class="cl"><span class="c1">#编辑定时任务 </span>
+</span></span><span class="line"><span class="cl">crontab -e 
+</span></span><span class="line"><span class="cl"><span class="c1">#测试每两分钟备份一次</span>
+</span></span><span class="line"><span class="cl">*/2 * * * *    /home/xx/shell/backup.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>恢复shell脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nv">basedir</span><span class="o">=</span><span class="s2">&#34;/home/xx/DB/backup/&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">containername</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="nv">username</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="nv">password</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="nv">databasename</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="nv">filename</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> ! -n <span class="nv">$filename</span> <span class="o">]</span>
+</span></span><span class="line"><span class="cl"> <span class="k">then</span> 
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;请输入备份文件名,基于&#34;</span><span class="nv">$basedir</span>“ 的相对路径”
+</span></span><span class="line"><span class="cl">  ehco <span class="s2">&#34;例如&#34;</span><span class="nv">$basedir</span><span class="s2">&#34;backup.tar.gz&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;直接附加参数 backup.tar.gz&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 检查文件是否存在</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> ! -f <span class="nv">$basedir$filename</span> <span class="o">]</span>
+</span></span><span class="line"><span class="cl"> <span class="k">then</span> <span class="nb">echo</span> <span class="s2">&#34;文件不存在  &#34;</span><span class="nv">$basedir$filename</span>
+</span></span><span class="line"><span class="cl"> <span class="nb">exit</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;开始执行恢复&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gunzip &lt; <span class="nv">$basedir$filename</span> <span class="p">|</span> docker <span class="nb">exec</span> -i <span class="nv">$containername</span> /usr/bin/mysql -u<span class="nv">$username</span> -p<span class="nv">$password</span>  <span class="nv">$databasename</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;恢复完成&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="问题解决">问题解决</h1>
+<p>mysqldump: [Warning] Using a password on the command line interface can be insecure.
+首先在mysql配置文件中添加如下信息 然后重启docker mysql服务 .参考 <a href="https://stackoverflow.com/questions/20751352/suppress-warning-messages-using-mysql-from-within-terminal-but-password-written">stackoverflow</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-docker" data-lang="docker"><span class="line"><span class="cl"><span class="o">[</span>client<span class="o">]</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nv">host</span><span class="o">=</span>localhost<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nv">password</span><span class="o">=</span>password<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>具体shell如下 使用&ndash;defaults-extra-file 替换原理的密码  其中 <strong>/etc/my.cnf</strong> 是mysql在容器中的配置文件位置。</p>
+<blockquote>
+<p>需要注意 &ndash;defaults-extra-file 必须是第一个参数</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1"># 备份文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nv">basedir</span><span class="o">=</span><span class="s2">&#34;/home/xx/DB/backup/&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">targetdir</span><span class="o">=</span><span class="nv">$basedir</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 数据库用户名</span>
+</span></span><span class="line"><span class="cl"><span class="nv">username</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#容器</span>
+</span></span><span class="line"><span class="cl"><span class="nv">containername</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 数据库</span>
+</span></span><span class="line"><span class="cl"><span class="nv">databasename</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$targetdir</span> <span class="o">]</span>
+</span></span><span class="line"><span class="cl"> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">   mkdir -p  <span class="nv">$targetdir</span>
+</span></span><span class="line"><span class="cl">   <span class="nb">echo</span>  <span class="s2">&#34;创建备份文件夹成功&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="k">else</span> <span class="nb">echo</span> <span class="s2">&#34;文件夹已经存在&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;开始备份&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#文件名</span>
+</span></span><span class="line"><span class="cl"><span class="nv">filename</span><span class="o">=</span>license_<span class="sb">`</span>date +%Y-%m-%d-%H%M<span class="sb">`</span>.sql.gz
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> mysql /usr/bin/mysqldump --defaults-extra-file<span class="o">=</span>/etc/my.cnf -u<span class="nv">$username</span>  --single-transaction   <span class="nv">$databasename</span> <span class="p">|</span> gzip &gt; <span class="nv">$targetdir$filename</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;备份完成&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;备份文件名&#34;</span><span class="nv">$targetdir$filename</span>
+</span></span><span class="line"><span class="cl">                                      
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Dylan</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-07
+        
+    </span>
+  </p>
+  
+  
+</div>
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/wechat-10.png">
+        <span>微信打赏</span>
+      </label>
+    <label class="qr-code-image" for="reward">
+        <img class="image" src="/reward/alipay-10.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/mysql/">Mysql</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/2024-01-07-mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Mysql高可用配置</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/2023-12-26-springaop%E5%86%85%E9%83%A8%E8%B0%83%E7%94%A8%E9%97%AE%E9%A2%98/">
+            <span class="next-text nav-default">SpringAop内部调用问题</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="944247756@qq.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/dylan-whynot" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.douban.com/" class="iconfont icon-douban" title="douban"></a>
+
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2023 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>olOwOlo</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

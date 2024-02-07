@@ -1,53 +1,116 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Even - A super concise theme for Hugo</title>
-    <link>http://wuhaiyang-dylan.github.io/</link>
-    <description>Recent content on Even - A super concise theme for Hugo</description>
+    <title>WhyNot Blog</title>
+    <link>http://dylan-whynot.github.io/</link>
+    <description>Recent content on WhyNot Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 26 Dec 2023 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://wuhaiyang-dylan.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 22 Jan 2024 12:48:20 +0800</lastBuildDate>
+    <atom:link href="http://dylan-whynot.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024 01 22 理解JVM</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-22-%E7%90%86%E8%A7%A3jvm/</link>
+      <pubDate>Mon, 22 Jan 2024 12:48:20 +0800</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-22-%E7%90%86%E8%A7%A3jvm/</guid>
+      <description>&lt;p&gt;记录一下阅读《深入理解Java虚拟机》后的个人理解。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Effective Java 3rd笔记</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-12-effective-java-3rd%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Fri, 12 Jan 2024 21:59:45 +0800</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-12-effective-java-3rd%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;p&gt;记录《Effectice Java 第三版》&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Java SPI机制</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-11-spi%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Thu, 11 Jan 2024 21:13:51 +0800</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-11-spi%E6%9C%BA%E5%88%B6/</guid>
+      <description>&lt;p&gt;SPI全称Service Provider Interface,是Java提供的一套用来被第三方实现或者扩展的接口，它可以用来启用框架扩展和替换组件。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>设计模式-设计原则</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-10%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%80/</link>
+      <pubDate>Thu, 11 Jan 2024 20:46:39 +0800</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-10%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%80/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Christopher Alexander说过：“每一个模式描述了一个在我们周围不断重复发生的问题，以及该问题的解决方案的核心。这样，你就能一次又一次地使用该方案而不必做重复劳动”.尽管Alexander所指的是城市和建筑模式，但他的思想也同样适用于面向对象设计模式，只是在面向对象的解决方案里，我们用对象和接口代替了墙壁和门窗。两类模式的核心都在于提供了相关问题的解决方案.&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>BouncyCastle简单使用</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-08-bouncycastle/</link>
+      <pubDate>Mon, 08 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-08-bouncycastle/</guid>
+      <description>&lt;p&gt;近期由于工作项目需要涉及发放签名以及校验签名的功能，为此简单调研了第三方加密-解密算法库BouncyCastle。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>java生产者-消费者</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-08-java%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</link>
+      <pubDate>Mon, 08 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-08-java%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</guid>
+      <description>&lt;p&gt;生产者－消费者模型在并发操作中很常见可以简单归纳为以下操作：&#xA;1.生产者持续生产,直到缓存区无法容纳；如果缓存区可以容纳，继续生产;&#xA;2.消费者持续消费,直到缓存区不够消费;　如果缓存区可以消费,继续进行消费;&#xA;介绍三种生产者-消费者java简单实现.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>java线程停止方法</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-08-java%E7%BA%BF%E7%A8%8B%E5%81%9C%E6%AD%A2%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Mon, 08 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-08-java%E7%BA%BF%E7%A8%8B%E5%81%9C%E6%AD%A2%E6%96%B9%E6%B3%95/</guid>
+      <description>线程启动很简单只需要调用start()方法即可运行线程。Thread.stop()方法已经被废弃掉 因为该方法不安全。下面介绍两种线程外停止线</description>
+    </item>
+    <item>
+      <title>Mysql高可用配置</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-07-mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Sun, 07 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-07-mysql%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE/</guid>
+      <description>&lt;p&gt;使用mysql的主从复制和Keepalived两种模式搭建高可用mysql&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Mysql简单备份与恢复方案</title>
+      <link>http://dylan-whynot.github.io/post/2024-01-07-mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Sun, 07 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>http://dylan-whynot.github.io/post/2024-01-07-mysql%E7%AE%80%E5%8D%95%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E6%96%B9%E6%A1%88/</guid>
+      <description>&lt;p&gt;使用mysql dump和shell脚本实现一套基础的mysql数据备份与恢复方案&lt;/p&gt;</description>
+    </item>
     <item>
       <title>SpringAop内部调用问题</title>
-      <link>http://wuhaiyang-dylan.github.io/post/2023-12-26-springaop%E5%86%85%E9%83%A8%E8%B0%83%E7%94%A8%E9%97%AE%E9%A2%98/</link>
+      <link>http://dylan-whynot.github.io/post/2023-12-26-springaop%E5%86%85%E9%83%A8%E8%B0%83%E7%94%A8%E9%97%AE%E9%A2%98/</link>
       <pubDate>Tue, 26 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/post/2023-12-26-springaop%E5%86%85%E9%83%A8%E8%B0%83%E7%94%A8%E9%97%AE%E9%A2%98/</guid>
+      <guid>http://dylan-whynot.github.io/post/2023-12-26-springaop%E5%86%85%E9%83%A8%E8%B0%83%E7%94%A8%E9%97%AE%E9%A2%98/</guid>
       <description>&lt;p&gt;使用Spring AOP功能时发现一个问题,简单描述一下:Spring 切面功能时,目标类方法内部调用时 增强功能没有生效,但是单个调用目录类的任何方法增强都是成功的.带着疑问Google,查阅Spring 官方文档.发现原来是自己对AOP原理理解不够深.&lt;/p&gt;</description>
     </item>
     <item>
       <title>如何阅读一本书记录</title>
-      <link>http://wuhaiyang-dylan.github.io/post/2023-12-25-%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6/</link>
+      <link>http://dylan-whynot.github.io/post/2023-12-25-%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/post/2023-12-25-%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6/</guid>
+      <guid>http://dylan-whynot.github.io/post/2023-12-25-%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6/</guid>
       <description>&lt;p&gt;《如何阅读一本书》简要记录&lt;/p&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>http://wuhaiyang-dylan.github.io/about/</link>
+      <link>http://dylan-whynot.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/about/</guid>
+      <guid>http://dylan-whynot.github.io/about/</guid>
       <description>Hi</description>
     </item>
     <item>
       <title></title>
-      <link>http://wuhaiyang-dylan.github.io/notes/</link>
+      <link>http://dylan-whynot.github.io/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/notes/</guid>
+      <guid>http://dylan-whynot.github.io/notes/</guid>
       <description></description>
     </item>
     <item>
       <title></title>
-      <link>http://wuhaiyang-dylan.github.io/search/placeholder/</link>
+      <link>http://dylan-whynot.github.io/search/placeholder/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/search/placeholder/</guid>
+      <guid>http://dylan-whynot.github.io/search/placeholder/</guid>
       <description></description>
     </item>
     <item>
       <title>Posts Archive</title>
-      <link>http://wuhaiyang-dylan.github.io/archive/</link>
+      <link>http://dylan-whynot.github.io/archive/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://wuhaiyang-dylan.github.io/archive/</guid>
+      <guid>http://dylan-whynot.github.io/archive/</guid>
       <description></description>
     </item>
   </channel>
